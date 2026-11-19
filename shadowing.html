@@ -639,6 +639,8 @@ function panelHtml(i){
       <button data-act="prev" class="sm">◀</button><button data-act="next" class="sm">▶</button>
     </div>
     <div class="tools">
+      <button class="sm ${st.showKo?'on':''}" data-act="ko">🇰🇷 번역</button>
+      <button class="sm ${st.showAna?'on':''}" data-act="ana">🔍 분석</button>
       <button class="sm ${st.tune?'on':''}" data-act="tune">⏱ 구간 미세조정</button>
       <button class="sm ${st.splitting?'on':''}" data-act="split">✂ 나누기</button>
       <button class="sm" data-act="merge" ${i>=st.sents.length-1?'disabled':''}>⊕ 다음 문장과 합치기</button>
@@ -671,6 +673,8 @@ $('#list').addEventListener('click',e=>{
     st.active=j; renderList(); playSeg(st.sents[j].start,st.sents[j].end);
     document.querySelector(`.sent[data-i="${j}"]`).scrollIntoView({block:'nearest',behavior:'smooth'}); }
   else if(a==='edit'){ st.editing=true; st.tune=false; st.splitting=false; renderList(); }
+  else if(a==='ko'){ $('#btnKo').onclick(); }
+  else if(a==='ana'){ $('#btnAna').onclick(); }
   else if(a==='tune'){ st.tune=!st.tune; st.splitting=false; renderList(); }
   else if(a==='split'){ st.splitting=!st.splitting; st.tune=false; renderList(); }
   else if(a==='s-'||a==='s+'||a==='sNow'){
