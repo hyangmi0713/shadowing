@@ -145,8 +145,13 @@ details summary{cursor:pointer;color:var(--acc);font-weight:600;font-size:14px}
         <li>PC의 YouTube에서 영상 아래 <b>설명 → '스크립트 표시'</b>를 누르세요.</li>
         <li>스크립트 창의 내용을 전부 드래그해서 복사 → 위 칸에 붙여넣기.</li>
         <li>.srt / .vtt 자막 파일 내용도 그대로 붙여넣을 수 있어요.</li>
+        <li><b>휴대폰에서는</b> 자막 다운로드 사이트(예: DownSub)에 영상 주소를 넣고 <b>SRT</b> 파일을 받은 뒤, '📂 자막 파일 불러오기'로 고르세요.</li>
       </ol>자막이 없으면 아래 '초 단위로 자르기'로 나눈 뒤, 각 문장의 ✎ 버튼으로 텍스트를 직접 적으면 채점돼요.</div>
     </details>
+    <div class="row" style="margin-top:8px">
+      <button id="btnSubFile">📂 자막 파일 불러오기 (.srt .vtt .txt)</button>
+      <input type="file" id="subFile" accept=".srt,.vtt,.txt,.sbv,text/plain" class="hidden">
+    </div>
     <div class="row" style="margin-top:8px">
       <button class="pri" id="btnBuild">문장 리스트 만들기</button>
       <span class="grow"></span>
@@ -417,6 +422,13 @@ function build(){
   renderList(); toast(`${st.sents.length}개 문장으로 나눴어요`);
 }
 $('#btnBuild').onclick=build;
+$('#btnSubFile').onclick=()=>$('#subFile').click();
+$('#subFile').onchange=async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  try{ $('#trans').value=await f.text(); }catch(err){ return toast('파일을 읽지 못했어요'); }
+  if(!parseTranscript($('#trans').value).length) return toast('이 파일에서 시간 정보를 찾지 못했어요. 시간이 들어 있는 SRT 형식으로 받아 주세요.');
+  if(st.vid) build(); else toast('자막을 불러왔어요. 영상을 불러온 뒤 "문장 리스트 만들기"를 눌러 주세요.');
+};
 $('#btnChunk').onclick=()=>{
   if(!st.vid) return toast('먼저 영상을 불러와 주세요');
   const n=+$('#chunk').value, [a,b]=st.range; if(!(b>a)) return toast('구간을 먼저 정해 주세요');
